@@ -1,21 +1,23 @@
-# Linux Lab: Commands and C Compilation
+# Week 2 – Lecture 2: Linux Commands and C Compilation
 
 ## Code
 
 **File operations**
-```bash
-mkdir linux_lab            # create a directory
-cd linux_lab               # move into it
-nano greeting.txt          # create and edit a file
-cat greeting.txt           # view the file
-cp greeting.txt backup.txt # copy a file
-mv backup.txt old_greeting.txt  # rename a file
-rm old_greeting.txt        # remove a file
-ls -l                      # list files with permissions
+
+```
+mkdir linux_lab
+cd linux_lab
+nano greeting.txt
+cat greeting.txt
+cp greeting.txt backup.txt
+mv backup.txt old_greeting.txt
+rm old_greeting.txt
+ls -l
 ```
 
 **APT package management**
-```bash
+
+```
 sudo apt update
 sudo apt install build-essential
 gcc --version
@@ -23,7 +25,8 @@ apt search python3
 ```
 
 **hello.c**
-```c
+
+```
 #include <stdio.h>
 
 int main() {
@@ -34,14 +37,33 @@ int main() {
 }
 ```
 
-**Compile and run**
-```bash
+**Compile and run (Lab 1)**
+
+```
 gcc -Wall hello.c -o hello_program
 ./hello_program
 ```
 
+**Four stages of compilation (Lab 2)**
+
+```
+gcc -E hello.c -o hello.i
+gcc -S hello.i -o hello.s
+gcc -c hello.s -o hello.o
+gcc hello.o -o hello
+```
+
+**Check exit status**
+
+```
+echo $?
+```
+
 ## Explanation
 
-- I used basic Linux commands to create folders, create and edit files, copy, rename, and delete them.
-- I used `apt` to update packages and install GCC with `build-essential`.
-- I wrote a C program in nano that adds two numbers, then changed the values and recompiled it.
+- Used basic Linux commands to create a folder, then create, copy, rename and delete files.
+- Used `apt` to update packages and install GCC with `build-essential`.
+- Wrote a C program in nano that adds two numbers, compiled it with `-Wall` (shows warnings), then changed the values and compiled again.
+- Learned the 4 compilation stages: preprocessing (`.i`), compiling (`.s`), assembling (`.o`) and linking (executable).
+- `main()` returns `0` for success. A non-zero value means an error. `echo $?` shows the exit status.
+- Knowledge check covered OS basics: OS, kernel, process vs program, and virtualization.
