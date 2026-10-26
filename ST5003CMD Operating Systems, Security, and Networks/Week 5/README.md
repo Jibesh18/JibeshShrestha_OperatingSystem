@@ -1,91 +1,20 @@
-# Lab 4: Memory Segments with GDB
+# Week 5: Memory Segments with GDB
 
-## Code
+This folder covers how a running program is laid out in memory, and how GDB is used to find the address of each segment.
 
-**demo2.c** (text and data segments)
+## Contents
 
-```
-#include <stdio.h>
+| File | Description |
+|---|---|
+| `Lab4_1.pdf` | Lab 4.1 report: text and initialized data segments, little-endian byte order |
+| `Lab4_2.pdf` | Lab 4.2 report: BSS, heap and stack address ranges, with post-lab questions |
+| `demo2.c` | Has a function (Text), a string constant (RoData) and an initialized global variable (Data) |
+| `demo.c` | Has an uninitialized global variable (BSS), a local variable (Stack) and a `malloc` variable (Heap) |
 
-int data_global_var = 0x12345678;
-const char *text_string_literal = "Text_Segment_Verification";
+## Topics
 
-void check_execution() {
-    printf("Executing within the text segment instruction block.\n");
-}
-
-int main() {
-    printf("Addresses:\n");
-    printf("Data (Global Initialized): %p\n", (void *)&data_global_var);
-    printf("Text String (ROData): %p\n", (void *)text_string_literal);
-    printf("Text Code (Function): %p\n", (void *)&check_execution);
-    check_execution();
-    printf("Ready for Text/Data segment inspection!\n");
-    return 0;
-}
-```
-
-**demo.c** (BSS, stack and heap)
-
-```
-#include <stdio.h>
-#include <stdlib.h>
-
-int bss_global_var;
-
-int main() {
-    int stack_local_var = 42;
-
-    int *heap_ptr = (int *)malloc(sizeof(int));
-    if (heap_ptr == NULL) {
-        return 1;
-    }
-    *heap_ptr = 99;
-
-    printf("Addresses:\n");
-    printf("BSS (Global): %p\n", (void *)&bss_global_var);
-    printf("Stack (Local): %p\n", (void *)&stack_local_var);
-    printf("Heap (Dynamic): %p\n", (void *)heap_ptr);
-
-    printf("Ready for GDB inspection!\n");
-
-    free(heap_ptr);
-    return 0;
-}
-```
-
-**Commands**
-
-```
-gcc -g demo2.c -o demo2
-gcc -g demo.c -o demo
-gdb ./demo
-break 24
-run
-info files
-print &bss_global_var
-info proc mappings
-print stack_local_var
-print &stack_local_var
-x/4wx $sp
-print heap_ptr
-x/1wd heap_ptr
-continue
-quit
-```
-
-## Preview
-
-**Lab 4.1 (demo2.c)**
-- A program with a function, a text string and a global variable is written.
-- GDB is used to see where each one is stored in memory:
-  - the function is in `.text`
-  - the string is in `.rodata`
-  - the variable is in `.data`
-- The number `0x12345678` is stored as `78 56 34 12`, so the computer is little-endian.
-
-**Lab 4.2 (demo.c)**
-- A program with a global variable, a local variable and a heap variable is written.
-- GDB is used to find where each one lives: BSS, stack and heap.
-- The heap and stack address ranges are read with `info proc mappings`.
-- The values are checked: the local variable is `42` and the heap value is `99`.
+- **Segments:** the function is in `.text`, constants are in `.rodata`, initialized globals are in `.data`, and uninitialized globals are in `.bss`
+- **GDB commands:** `break`, `run`, `info files`, `info proc mappings`, `print`, and `x` to read memory
+- **Byte order:** the value `0x12345678` is stored as `78 56 34 12`, so the system is little-endian
+- **Heap and stack:** the heap grows up and the stack grows down, so they move toward each other
+- **Address randomization:** addresses usually differ between runs (ASLR), and each process has its own private memory

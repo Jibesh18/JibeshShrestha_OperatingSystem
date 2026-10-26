@@ -1,76 +1,23 @@
-# Lab 3: How a Program Becomes a Process
+# Week 3, Lecture 3: Process Lifecycles and OS Interaction
 
-## Code
+This folder covers how Linux treats a running program as a process: its process ID, its exit code, and how it reads input and writes output.
 
-**1. Run for 30 seconds**
+## Contents
 
-```
-#include <stdio.h>
-#include <unistd.h>
+| File | Description |
+|---|---|
+| `Lab3.pdf` | Lab 3 report with five tasks, screenshots and summaries |
+| `Knowledge_Test.pdf` | 15 short questions and answers on processes, PIDs and exit codes |
+| `task1_alive.c` | Runs for 30 seconds so it can be watched from another terminal with `ps` |
+| `task2_identity.c` | Prints its own process ID (PID) and its parent's ID (PPID) |
+| `exit.c` | Returns `0` for a positive number and `1` otherwise |
+| `task4_input.c` | Reads a name from standard input and prints a greeting |
+| `task5_control.c` | Prints its PID, asks whether to continue, and exits with `0` or `1` |
 
-int main() {
-    printf("I am starting ....\n");
-    for (int i = 1; i <= 30; i++) {
-        sleep(1);
-    }
-    printf("I am finished.\n");
-    return 0;
-}
-```
+## Topics
 
-```
-gcc task1_alive.c -o task1
-./task1 &
-ps aux | grep task1
-```
-
-**2. Show PID and parent PID**
-
-```
-#include <stdio.h>
-#include <unistd.h>
-
-int main() {
-    printf("My PID is: %d\n", getpid());
-    printf("My parent PID is: %d\n", getppid());
-    sleep(20);
-    return 0;
-}
-```
-
-**3. Success or failure (exit code)**
-
-```
-#include <stdio.h>
-
-int main() {
-    int num;
-    printf("Enter a number: ");
-    scanf("%d", &num);
-    if (num > 0) {
-        printf("Success\n");
-        return 0;
-    }
-    printf("Failure\n");
-    return 1;
-}
-```
-
-```
-./task3
-echo $?
-```
-
-## Explanation
-
-- **Task 1:** the program sleeps for 30 seconds. `&` runs it in the background, so I could check it with `ps`.
-- **Task 2:** every process has an ID (PID) and a parent (PPID). Here the parent was `bash`.
-- **Task 3:** `0` means success and anything else means failure. `echo $?` shows it.
-- **Tasks 4 and 5:** used `scanf` to read input and `printf` to show output, and combined it with the PID.
-
-## Quick Answers
-
-- **Process:** a program that is running.
-- **PID:** a number the OS gives each process.
-- **New process:** `fork()`. **Replace a process:** `exec()`.
-- **See processes:** `ps`.
+- **Long-running process:** a program runs in the background with `&` and is checked with `ps aux`
+- **PID and PPID:** every process has an ID, and its parent is usually the terminal shell
+- **Exit codes:** `0` means success, any other number means failure, and `echo $?` shows it
+- **Standard I/O:** `scanf` reads from stdin and `printf` writes to stdout
+- **Conditional exit:** a program picks its exit code from user input
